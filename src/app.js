@@ -1,11 +1,13 @@
-import express from 'express';
+import express, { request } from 'express';
 import logger from './logger/logger.js';
 
 const app = express();
 
+app.use(express.json());
+app.use(requestLogger);
+
 app.get('/',(req,res)=>{
-    logger.info("Root route accessed");
-    res.send("Hello World");
+ res.send("Observability system running");
 });
 
 export default app;
