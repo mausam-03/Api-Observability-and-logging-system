@@ -2,20 +2,23 @@ import logger from "../logger/logger.js";
 
 const errorHandler = (err, req, res, next) => {
 
+  const statusCode = err.statusCode || 500;
+
   logger.error({
     message: err.message,
-    stack: err.stack,
+    errorType: err.errorType || "UNKNOWN_ERROR",
     method: req.method,
     url: req.originalUrl,
-    statusCode: err.statusCode || 500,
-    correlationId: req.correlationId
+    statusCode,
+    correlationId: req.correlationId,
+    stack: err.stack
   });
 
-  res.status(err.statusCode || 500).json({
+  res.status(statusCode).json({
     success: false,
-    message: err.message || "Internal Server Error"
+    errorType: err.errorType || "UNKNOWN_ERROR",
+    message: err.message
   });
-
 };
 
 export default errorHandler;

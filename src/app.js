@@ -3,6 +3,9 @@ import logger from './logger/logger.js';
 import correlationId from './middleware/correlationId.js';
 import errorHandler from './middleware/errorHandler.js';
 import requestLogger from './middleware/requestLogger.js';
+import authError from './errors/authError.js';
+import dataError from './errors/dataError.js';
+import validationError from './errors/validationError.js';
 
 const app = express();
 
@@ -28,4 +31,15 @@ app.get("/slow", async (req, res) => {
   });
 
 });
+app.get("/test-validation", (req, res, next) => {
+  next(new validationError("Email is invalid"));
+});
+
+app.get("/test-auth", (req, res, next) => {
+  next(new authError("Token missing"));
+});
+app.get("/test-db", (req, res, next) => {
+  next(new dataError("DB connection failed"));
+});
+
 export default app;
