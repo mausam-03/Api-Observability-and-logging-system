@@ -1,9 +1,10 @@
 import logger from "../logger/logger.js";
+import { incrementErrorRequests } from "../utils/metrics.js";
 
 const errorHandler = (err, req, res, next) => {
 
   const statusCode = err.statusCode || 500;
-
+  incrementErrorRequests();
   logger.error({
     message: err.message,
     errorType: err.errorType || "UNKNOWN_ERROR",

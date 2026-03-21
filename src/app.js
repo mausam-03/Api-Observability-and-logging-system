@@ -6,6 +6,7 @@ import requestLogger from './middleware/requestLogger.js';
 import authError from './errors/authError.js';
 import dataError from './errors/dataError.js';
 import validationError from './errors/validationError.js';
+import { getMetrics } from "./utils/metrics.js";
 
 const app = express();
 
@@ -40,6 +41,9 @@ app.get("/test-auth", (req, res, next) => {
 });
 app.get("/test-db", (req, res, next) => {
   next(new dataError("DB connection failed"));
+});
+app.get("/metrics", (req, res) => {
+  res.json(getMetrics());
 });
 
 export default app;
