@@ -1,11 +1,22 @@
 import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";  
+import asyncLocalStorage from "../utils/asyncContext.js";
 
 const { combine, timestamp, json } = winston.format;
 
+const addCorrelationId = winston.format((info) => {
+  const store = asyncLocalStorage.getStore();
+
+  if (store && store.correlationId) {
+    info.correlationId = store.correlationId;
+  }
+
+  return info;
+});
+
 const logger = winston.createLogger({
   level: "info",
-  format: combine(timestamp(), json()),
+  format: combine(addCorrelationId(),timestamp(), json()),
   transports: [
     new winston.transports.Console(),
 
