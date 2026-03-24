@@ -11,15 +11,24 @@ import correlationId from "./correlationId.js";
 import {
   incrementTotalRequests,
   incrementSlowRequests,
-  addResponseTime
+  addResponseTime,
+  incrementRouteRequests,
+  incrementRouteSlow,
+  addRouteResponseTime
 } from "../utils/metrics.js";
 
 const requestLogger = (req, res, next) => {
+  const route = req.route?.path || req.originalUrl;
+
   const startTime = Date.now();
   incrementTotalRequests();
+  incrementRouteRequests(route);
+
   res.on("finish", () => {
     const duration = Date.now() - startTime;
     addResponseTime(duration);
+     addRouteResponseTime(route, duration);
+     
     logger.info({
       correlationId: req.correlationId,
       method: req.method,
